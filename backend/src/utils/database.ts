@@ -10,7 +10,7 @@ const globalWithMongoose = globalThis as GlobalWithMongoose;
 let cachedConnection: typeof mongoose | null = globalWithMongoose.__mongooseCachedConnection ?? null;
 
 export async function connectToDatabase(): Promise<typeof mongoose> {
-  if (cachedConnection) {
+  if (cachedConnection && cachedConnection.connection.readyState === 1) {
     console.log('Using cached MongoDB connection');
     return cachedConnection;
   }
@@ -22,13 +22,20 @@ export async function connectToDatabase(): Promise<typeof mongoose> {
   }
 
   try {
-    const connection = await mongoose.connect(MONGO_URI);
+    // Add connection timeout and options for faster connection
+    const connection = await mongoose.connect(MONGO_URI, {
+      serverSelectionTimeoutMS: 5000, // Timeout after 5 seconds instead of 30s
+      socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+    });
     console.log('✅ Connected to MongoDB Atlas');
     cachedConnection = connection;
     globalWithMongoose.__mongooseCachedConnection = cachedConnection;
     return connection;
   } catch (error) {
     console.error('❌ MongoDB connection error:', error);
+    // Clear cache on error so it retries next time
+    cachedConnection = null;
+    globalWithMongoose.__mongooseCachedConnection = null;
     throw error;
   }
 }

@@ -8,6 +8,10 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+// Health check endpoint (NO database connection needed - fast response)
+app.get('/health', (_req, res) => {
+    res.json({ status: 'ok' });
+});
 // Initialize MongoDB connection (cached across invocations)
 let isConnected = false;
 async function ensureDatabaseConnection() {
@@ -23,8 +27,8 @@ async function ensureDatabaseConnection() {
         }
     }
 }
-// Middleware to ensure DB connection for all routes
-app.use(async (_req, _res, next) => {
+// Middleware to ensure DB connection ONLY for API routes that need it
+app.use('/api', async (_req, _res, next) => {
     try {
         await ensureDatabaseConnection();
         next();
@@ -36,11 +40,7 @@ app.use(async (_req, _res, next) => {
         }
     }
 });
-// Health check endpoint
-app.get('/health', (_req, res) => {
-    res.json({ status: 'ok' });
-});
-// API routes
+// API routes (these will use the DB connection middleware above)
 app.use('/api/sales', salesRoutes);
 // Error handler
 app.use((err, _req, res, _next) => {
