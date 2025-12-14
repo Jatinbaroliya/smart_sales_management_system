@@ -17,19 +17,26 @@ app.get('/health', (_req, res) => {
 });
 
 // Initialize MongoDB connection (cached across invocations)
-let isConnected = false;
+let connectionPromise: Promise<void> | null = null;
 
-async function ensureDatabaseConnection() {
-  if (!isConnected) {
+async function ensureDatabaseConnection(): Promise<void> {
+  if (connectionPromise) {
+    await connectionPromise;
+    return;
+  }
+
+  connectionPromise = (async () => {
     try {
       await connectToDatabase();
-      isConnected = true;
       console.log('✅ MongoDB connection established');
     } catch (error) {
       console.error('❌ MongoDB connection error:', error);
+      connectionPromise = null; // Reset so it can retry
       throw error;
     }
-  }
+  })();
+
+  await connectionPromise;
 }
 
 // Middleware to ensure DB connection ONLY for API routes that need it
@@ -40,19 +47,26 @@ app.use('/api', async (_req, _res, next) => {
   } catch (error) {
     console.error('Database connection error:', error);
     if (!_res.headersSent) {
-      _res.status(500).json({ error: 'Database connection failed' });
+      _res.status(500).json({ 
+        error: 'Database connection failed',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
     }
+    return; // Stop further processing
   }
 });
 
 // API routes (these will use the DB connection middleware above)
 app.use('/api/sales', salesRoutes);
 
-// Error handler
+// Error handler (must have 4 parameters to be recognized as error handler)
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  console.error('Error:', err);
+  console.error('Unhandled error:', err);
   if (!res.headersSent) {
-    res.status(500).json({ error: 'Internal server error', message: err.message });
+    res.status(500).json({ 
+      error: 'Internal server error', 
+      message: err.message || 'An unexpected error occurred'
+    });
   }
 });
 
