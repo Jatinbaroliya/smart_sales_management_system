@@ -11,6 +11,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Root endpoint - quick response
+app.get('/', (_req, res) => {
+  res.json({ 
+    status: 'ok', 
+    message: 'Sales Management System API',
+    endpoints: {
+      health: '/health',
+      sales: '/api/sales',
+      filterOptions: '/api/sales/filter-options'
+    }
+  });
+});
+
 // Health check endpoint (NO database connection needed - fast response)
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });

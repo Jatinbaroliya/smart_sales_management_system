@@ -24,8 +24,10 @@ export async function connectToDatabase(): Promise<typeof mongoose> {
   try {
     // Add connection timeout and options for faster connection
     const connection = await mongoose.connect(MONGO_URI, {
-      serverSelectionTimeoutMS: 5000, // Timeout after 5 seconds instead of 30s
+      serverSelectionTimeoutMS: 10000, // Timeout after 10 seconds
       socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+      connectTimeoutMS: 10000, // Connection timeout
+      maxPoolSize: 1, // Limit connection pool for serverless
     });
     console.log('✅ Connected to MongoDB Atlas');
     cachedConnection = connection;
