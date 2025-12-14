@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import serverless from 'serverless-http';
 import { connectToDatabase } from '../src/utils/database.js';
 import salesRoutes from '../src/routes/salesRoutes.js';
 
@@ -9,14 +10,6 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-
-// Health check endpoint
-app.get('/health', (_req, res) => {
-  res.json({ status: 'ok' });
-});
-
-// API routes
-app.use('/api/sales', salesRoutes);
 
 // Initialize MongoDB connection (cached across invocations)
 let isConnected = false;
@@ -34,24 +27,42 @@ async function ensureDatabaseConnection() {
   }
 }
 
-// Vercel serverless function handler
-export default async function handler(
-  req: express.Request,
-  res: express.Response
-): Promise<void> {
-  // Ensure database connection before handling requests
+// Middleware to ensure DB connection for all routes
+app.use(async (_req, _res, next) => {
   try {
     await ensureDatabaseConnection();
+    next();
   } catch (error) {
-    res.status(500).json({ error: 'Database connection failed' });
-    return;
-  }
-
-  // Handle the request with Express app
-  app(req, res, () => {
-    if (!res.headersSent) {
-      res.status(404).json({ error: 'Not found' });
+    console.error('Database connection error:', error);
+    if (!_res.headersSent) {
+      _res.status(500).json({ error: 'Database connection failed' });
     }
-  });
-}
+  }
+});
+
+// Health check endpoint
+app.get('/health', (_req, res) => {
+  res.json({ status: 'ok' });
+});
+
+// API routes
+app.use('/api/sales', salesRoutes);
+
+// Error handler
+app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error('Error:', err);
+  if (!res.headersSent) {
+    res.status(500).json({ error: 'Internal server error', message: err.message });
+  }
+});
+
+// 404 handler
+app.use((_req: express.Request, res: express.Response) => {
+  if (!res.headersSent) {
+    res.status(404).json({ error: 'Not found' });
+  }
+});
+
+// Export serverless handler
+export default serverless(app);
 
