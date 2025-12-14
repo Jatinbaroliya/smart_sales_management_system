@@ -3,40 +3,38 @@ import express from 'express';
 import cors from 'cors';
 import { connectToDatabase } from './utils/database.js';
 import salesRoutes from './routes/salesRoutes.js';
+
 const app = express();
 const PORT = process.env.PORT || 3000;
+
 // Middleware
 app.use(cors());
 app.use(express.json());
-// Health check endpoint
+
+// Health check
 app.get('/health', (_req, res) => {
-    res.json({ status: 'ok' });
+  res.json({ status: 'ok' });
 });
-// API routes
+
+// Routes
 app.use('/api/sales', salesRoutes);
-// Initialize server
+
+// Start server
 async function startServer() {
-    try {
-        // Connect to MongoDB Atlas
-        console.log('Connecting to MongoDB Atlas...');
-        await connectToDatabase();
-        console.log('✅ MongoDB connection established');
-        // Start the server
-        if (process.env.NODE_ENV === 'production') {
-            console.log("returing app");
-            return app;
-        }
-        else {
-            app.listen(PORT, () => {
-                console.log(`🚀 Server is running on http://localhost:${PORT}`);
-                console.log(`📊 Using MongoDB Atlas: salesDB.sales`);
-            });
-        }
-    }
-    catch (error) {
-        console.error('❌ Failed to start server:', error);
-        process.exit(1);
-    }
+  try {
+    console.log('Connecting to MongoDB Atlas...');
+    await connectToDatabase();
+    console.log('✅ MongoDB connection established');
+
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`📊 Using MongoDB Atlas: salesDB.sales`);
+    });
+
+  } catch (error) {
+    console.error('❌ Failed to start server:', error);
+    process.exit(1);
+  }
 }
+
 startServer();
-//# sourceMappingURL=index.js.map
