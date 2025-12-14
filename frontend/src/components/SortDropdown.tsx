@@ -1,9 +1,9 @@
-import { SortField } from '../types/sales';
+import { SortField, type SortField as SortFieldType } from '../types/sales';
 import styles from './SortDropdown.module.css';
 
 interface SortDropdownProps {
-  value: SortField;
-  onChange: (value: SortField) => void;
+  value: SortFieldType;
+  onChange: (value: SortFieldType) => void;
 }
 
 const sortOptions = [
@@ -21,7 +21,7 @@ export function SortDropdown({ value, onChange }: SortDropdownProps) {
       <select
         id="sort"
         value={value}
-        onChange={(e) => onChange(e.target.value as SortField)}
+        onChange={(e) => onChange(e.target.value as SortFieldType)}
         className={styles.select}
       >
         {sortOptions.map((option) => (

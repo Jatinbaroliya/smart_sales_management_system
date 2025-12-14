@@ -6,7 +6,7 @@ import { FilterPanel } from '../components/FilterPanel';
 import { SortDropdown } from '../components/SortDropdown';
 import { SalesTable } from '../components/SalesTable';
 import { Pagination } from '../components/Pagination';
-import type { FilterOptions } from '../types/sales';
+import type { FilterOptions, SortField as SortFieldType } from '../types/sales';
 import { SortField } from '../types/sales';
 import styles from './Dashboard.module.css';
 
@@ -16,7 +16,7 @@ export function Dashboard() {
 
   const [search, setSearch] = useState<string>('');
   const [filters, setFilters] = useState<FilterOptions>({});
-  const [sort, setSort] = useState<SortField>(SortField.DATE_DESC);
+  const [sort, setSort] = useState<SortFieldType>(SortField.DATE_DESC);
   const [page, setPage] = useState<number>(1);
 
   const debouncedSearch = useDebounce(search, 300);
