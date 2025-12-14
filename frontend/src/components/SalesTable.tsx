@@ -15,7 +15,7 @@ export function SalesTable({ sales, loading }: SalesTableProps) {
     );
   }
 
-  if (sales.length === 0) {
+  if ((sales?.length ?? 0) === 0) {
     return (
       <div className={styles.tableContainer}>
         <div className={styles.emptyState}>
