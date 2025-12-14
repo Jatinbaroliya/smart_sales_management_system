@@ -27,16 +27,12 @@ async function startServer() {
     await connectToDatabase();
     console.log('✅ MongoDB connection established');
 
-    // Start the server
-    if( process.env.NODE_ENV === 'production') {
-      console.log("returing app")
-      return app;
-    } else {
-      app.listen(PORT, () => {
-        console.log(`🚀 Server is running on http://localhost:${PORT}`);
-        console.log(`📊 Using MongoDB Atlas: salesDB.sales`);
-      });
-    }
+    // Start the server and bind to the Render-supplied port so the service is reachable.
+    // Always listen on the provided PORT (Render requires a bound port).
+    app.listen(PORT, () => {
+      console.log(`🚀 Server is running on http://0.0.0.0:${PORT}`);
+      console.log(`📊 Using MongoDB Atlas: salesDB.sales`);
+    });
   } catch (error) {
     console.error('❌ Failed to start server:', error);
     process.exit(1);
