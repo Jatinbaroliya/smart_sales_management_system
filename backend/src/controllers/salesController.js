@@ -1,5 +1,5 @@
-import { SalesService } from '../services/salesService.js';
-import { SortField } from '../models/SortOptions.js';
+import { SalesService } from '../services/salesService.ts';
+import { SortField } from '../models/SortOptions.ts';
 export class SalesController {
     salesService;
     constructor(salesService) {

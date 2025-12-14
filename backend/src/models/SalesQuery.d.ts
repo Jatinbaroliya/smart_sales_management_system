@@ -1,6 +1,6 @@
-import type { FilterOptions } from './FilterOptions.js';
-import type { PaginationParams } from './PaginationParams.js';
-import type { SortOptions } from './SortOptions.js';
+import type { FilterOptions } from './FilterOptions.ts';
+import type { PaginationParams } from './PaginationParams.ts';
+import type { SortOptions } from './SortOptions.ts';
 export interface SalesQuery extends PaginationParams, SortOptions {
     search?: string;
     filters?: FilterOptions;

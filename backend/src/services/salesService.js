@@ -1,5 +1,5 @@
-import { SortField } from '../models/SortOptions.js';
-import { Sale } from '../models/Sale.js';
+import { SortField } from '../models/SortOptions.ts';
+import { Sale } from '../models/Sale.ts';
 // Avoid importing `FilterQuery` directly from mongoose to keep types compatible across versions
 export class SalesService {
     async getSales(query) {

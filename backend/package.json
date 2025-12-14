@@ -10,7 +10,8 @@
   "scripts": {
     "dev": "nodemon --exec \"tsx\" src/server.ts",
     "build": "tsc",
-    "start": "node dist/src/server.js",
+    "postinstall": "npm run build",
+    "start": "node server-start.js",
     "vercel-build": "tsc"
   },
   "keywords": [],

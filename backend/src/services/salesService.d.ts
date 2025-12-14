@@ -1,5 +1,5 @@
-import type { SaleRecord } from '../models/SaleRecord.js';
-import type { SalesQuery } from '../models/SalesQuery.js';
+import type { SaleRecord } from '../models/SaleRecord.ts';
+import type { SalesQuery } from '../models/SalesQuery.ts';
 export declare class SalesService {
     getSales(query: SalesQuery): Promise<{
         data: SaleRecord[];

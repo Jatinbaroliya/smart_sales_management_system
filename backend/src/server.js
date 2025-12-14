@@ -1,8 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import { connectToDatabase } from './utils/database.js';
-import salesRoutes from './routes/salesRoutes.js';
+import { connectToDatabase } from './utils/database.ts';
+import salesRoutes from './routes/salesRoutes.ts';
 const app = express();
 const PORT = process.env.PORT || 3000;
 // Middleware

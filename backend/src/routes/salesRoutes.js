@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { SalesController } from '../controllers/salesController.js';
-import { SalesService } from '../services/salesService.js';
+import { SalesController } from '../controllers/salesController.ts';
+import { SalesService } from '../services/salesService.ts';
 const router = Router();
 // Initialize service and controller
 const salesService = new SalesService();

@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { SalesService } from '../services/salesService.js';
+import { SalesService } from '../services/salesService.ts';
 export declare class SalesController {
     private salesService;
     constructor(salesService: SalesService);

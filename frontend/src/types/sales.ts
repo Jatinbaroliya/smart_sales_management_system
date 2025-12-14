@@ -55,7 +55,7 @@ export const SortField = {
   CUSTOMER_NAME_ASC: 'customer_name_asc',
 } as const;
 
-export type SortField = 'date_desc' | 'quantity' | 'customer_name_asc';
+export type SortField = typeof SortField[keyof typeof SortField];
 
 export interface SalesQuery {
   page: number;
