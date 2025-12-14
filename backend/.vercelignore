@@ -5,6 +5,19 @@ api/*.js.map
 api/*.d.ts
 api/*.d.ts.map
 
+# Exclude root index files - these are not serverless functions
+index.ts
+index.js
+index.d.ts
+
+# Exclude src/server.ts - it's for local development only (renamed from index.ts)
+src/server.ts
+src/server.js
+src/server.d.ts
+src/index.ts
+src/index.js
+src/index.d.ts
+
 # Exclude other build artifacts
 dist/
 *.log
