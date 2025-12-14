@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { salesAPI } from '../services/api';
 import type { SaleRecord, SalesQuery, FilterOptionsData } from '../types/sales';
-import { SortField } from '../types/sales';
 
 interface UseSalesDataReturn {
   sales: SaleRecord[];

@@ -1,11 +1,11 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import { loadSalesData } from './utils/csvParser.js';
-import { salesService } from './routes/salesRoutes.js';
+import { connectToDatabase } from './utils/database.js';
 import salesRoutes from './routes/salesRoutes.js';
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
@@ -22,16 +22,23 @@ app.use('/api/sales', salesRoutes);
 // Initialize server
 async function startServer() {
   try {
-    console.log('Loading sales data from CSV...');
-    const salesData = await loadSalesData();
-    salesService.setSalesData(salesData);
-    console.log(`Successfully loaded ${salesData.length} sales records`);
+    // Connect to MongoDB Atlas
+    console.log('Connecting to MongoDB Atlas...');
+    await connectToDatabase();
+    console.log('✅ MongoDB connection established');
 
-    app.listen(PORT, () => {
-      console.log(`Server is running on http://localhost:${PORT}`);
-    });
+    // Start the server
+    if( process.env.NODE_ENV === 'production') {
+      console.log("returing app")
+      return app;
+    } else {
+      app.listen(PORT, () => {
+        console.log(`🚀 Server is running on http://localhost:${PORT}`);
+        console.log(`📊 Using MongoDB Atlas: salesDB.sales`);
+      });
+    }
   } catch (error) {
-    console.error('Failed to start server:', error);
+    console.error('❌ Failed to start server:', error);
     process.exit(1);
   }
 }

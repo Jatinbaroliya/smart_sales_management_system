@@ -8,9 +8,6 @@ const router = Router();
 const salesService = new SalesService();
 const salesController = new SalesController(salesService);
 
-// Export service instance so it can be initialized with data
-export { salesService };
-
 // Routes
 router.get('/', salesController.getSales);
 router.get('/filter-options', salesController.getFilterOptions);

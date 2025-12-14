@@ -63,3 +63,5 @@ coverage/
 # Add it manually or use Git LFS: git lfs track "*.csv"
 src/data/dataset.csv
 
+
+.vercel

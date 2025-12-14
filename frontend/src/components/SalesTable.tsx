@@ -75,27 +75,27 @@ export function SalesTable({ sales, loading }: SalesTableProps) {
         </thead>
         <tbody className={styles.tbody}>
           {sales.map((sale, index) => (
-            <tr key={sale.transactionId} className={index % 2 === 0 ? styles.rowEven : styles.rowOdd}>
-              <td>{formatDate(sale.date)}</td>
+            <tr key={sale.transactionId || index} className={index % 2 === 0 ? styles.rowEven : styles.rowOdd}>
+              <td>{sale.date ? formatDate(sale.date) : 'N/A'}</td>
               <td className={styles.customerCell}>
-                <div className={styles.customerName}>{sale.customerName}</div>
+                <div className={styles.customerName}>{sale.customerName || 'N/A'}</div>
                 <div className={styles.customerMeta}>
-                  {sale.gender}, {sale.age} yrs
+                  {sale.gender || 'N/A'}, {sale.age || 0} yrs
                 </div>
               </td>
-              <td>{sale.phoneNumber}</td>
-              <td>{sale.customerRegion}</td>
+              <td>{sale.phoneNumber || 'N/A'}</td>
+              <td>{sale.customerRegion || 'N/A'}</td>
               <td>
-                <div className={styles.productName}>{sale.productName}</div>
-                <div className={styles.productBrand}>{sale.brand}</div>
+                <div className={styles.productName}>{sale.productName || 'N/A'}</div>
+                <div className={styles.productBrand}>{sale.brand || 'N/A'}</div>
               </td>
-              <td>{sale.productCategory}</td>
-              <td className={styles.quantityCell}>{sale.quantity}</td>
-              <td className={styles.amountCell}>{formatCurrency(sale.finalAmount)}</td>
-              <td>{sale.paymentMethod}</td>
+              <td>{sale.productCategory || 'N/A'}</td>
+              <td className={styles.quantityCell}>{sale.quantity || 0}</td>
+              <td className={styles.amountCell}>{formatCurrency(sale.finalAmount || 0)}</td>
+              <td>{sale.paymentMethod || 'N/A'}</td>
               <td>
-                <span className={`${styles.status} ${styles[sale.orderStatus.toLowerCase()] || ''}`}>
-                  {sale.orderStatus}
+                <span className={`${styles.status} ${styles[sale.orderStatus?.toLowerCase() || ''] || ''}`}>
+                  {sale.orderStatus || 'N/A'}
                 </span>
               </td>
             </tr>

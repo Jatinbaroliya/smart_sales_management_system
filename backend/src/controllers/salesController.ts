@@ -8,7 +8,7 @@ import type { SaleRecord } from '../models/SaleRecord.js';
 export class SalesController {
   constructor(private salesService: SalesService) {}
 
-  getSales = (req: Request, res: Response): void => {
+  getSales = async (req: Request, res: Response): Promise<void> => {
     try {
       // Parse query parameters
       const page = parseInt(req.query.page as string, 10) || 1;
@@ -94,7 +94,7 @@ export class SalesController {
         ...(Object.keys(filters).length > 0 ? { filters } : {}),
       };
 
-      const result = this.salesService.getSales(query);
+      const result = await this.salesService.getSales(query);
 
       const response: APIResponse<SaleRecord[]> = {
         data: result.data,
@@ -109,16 +109,34 @@ export class SalesController {
     }
   };
 
-  getFilterOptions = (_req: Request, res: Response): void => {
+  getFilterOptions = async (_req: Request, res: Response): Promise<void> => {
     try {
+      const [
+        regions,
+        genders,
+        categories,
+        paymentMethods,
+        tags,
+        ageRange,
+        dateRange,
+      ] = await Promise.all([
+        this.salesService.getUniqueRegions(),
+        this.salesService.getUniqueGenders(),
+        this.salesService.getUniqueCategories(),
+        this.salesService.getUniquePaymentMethods(),
+        this.salesService.getUniqueTags(),
+        this.salesService.getAgeRange(),
+        this.salesService.getDateRange(),
+      ]);
+
       res.json({
-        regions: this.salesService.getUniqueRegions(),
-        genders: this.salesService.getUniqueGenders(),
-        categories: this.salesService.getUniqueCategories(),
-        paymentMethods: this.salesService.getUniquePaymentMethods(),
-        tags: this.salesService.getUniqueTags(),
-        ageRange: this.salesService.getAgeRange(),
-        dateRange: this.salesService.getDateRange(),
+        regions,
+        genders,
+        categories,
+        paymentMethods,
+        tags,
+        ageRange,
+        dateRange,
       });
     } catch (error) {
       console.error('Error fetching filter options:', error);

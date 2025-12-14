@@ -49,11 +49,13 @@ export interface FilterOptions {
   };
 }
 
-export enum SortField {
-  DATE_DESC = 'date_desc',
-  QUANTITY = 'quantity',
-  CUSTOMER_NAME_ASC = 'customer_name_asc',
-}
+export const SortField = {
+  DATE_DESC: 'date_desc',
+  QUANTITY: 'quantity',
+  CUSTOMER_NAME_ASC: 'customer_name_asc',
+} as const;
+
+export type SortField = typeof SortField[keyof typeof SortField];
 
 export interface SalesQuery {
   page: number;

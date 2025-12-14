@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { APIResponse, SaleRecord, SalesQuery, FilterOptionsData } from '../types/sales';
 
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.BACKEND_API_BASE_URL || 'http://localhost:3000/api';
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
