@@ -5,34 +5,25 @@ import type { APIResponse, SaleRecord, SalesQuery, FilterOptionsData } from '../
 // Fallback to a relative `/api` so the frontend can call the backend when served from the same origin.
 // Runtime fallbacks: read a meta tag (`<meta name="backend-api" content="https://.../api">`) or
 // `window.__BACKEND_API_BASE_URL` so you can change the backend URL without rebuilding.
-function getRuntimeBackendUrl(): string {
-  // build-time Vite var (preferred)
-  // Vite exposes build-time env on `import.meta.env` (typed only in Vite builds)
-  // Access safely to avoid TS compile error in other contexts.
+// Enforce build-time backend URL only. This makes the frontend always call
+// the backend specified in `VITE_BACKEND_API_BASE_URL` at build time.
+// We append `/api` so callers can request `sales` and the final URL becomes
+// `${VITE_BACKEND_API_BASE_URL.replace(/\/$/, '')}/api/sales`.
+// If the env var is missing, log an error and fallback to a relative `/api`.
+function getEnforcedBackendUrl(): string {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const buildVar = import.meta.env && import.meta.env.VITE_BACKEND_API_BASE_URL;
-  if (buildVar) return buildVar;
+  if (buildVar) {
+    const trimmed = String(buildVar).replace(/\/$/, '');
+    return `${trimmed}/api`;
+  }
 
-  // runtime meta tag (can be edited on the deployed `index.html`)
-  try {
-    if (typeof document !== 'undefined') {
-      const meta = document.querySelector('meta[name="backend-api"]') as HTMLMetaElement | null;
-      if (meta && meta.content) return meta.content;
-    }
-  } catch (e) {}
-
-  // runtime global (set by server or script): window.__BACKEND_API_BASE_URL
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const w = (window as any);
-    if (w && w.__BACKEND_API_BASE_URL) return w.__BACKEND_API_BASE_URL;
-  } catch (e) {}
-
+  console.error('VITE_BACKEND_API_BASE_URL is not set. Falling back to /api (local).');
   return '/api';
 }
 
-const API_BASE_URL = getRuntimeBackendUrl();
+const API_BASE_URL = getEnforcedBackendUrl();
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
