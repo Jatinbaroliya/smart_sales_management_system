@@ -86,14 +86,14 @@ export const salesAPI = {
       }
     }
     
-    const response = await apiClient.get<APIResponse<SaleRecord[]>>('/sales', {
+    const response = await apiClient.get<APIResponse<SaleRecord[]>>('sales', {
       params,
     });
     return response.data;
   },
 
   getFilterOptions: async (): Promise<FilterOptionsData> => {
-    const response = await apiClient.get<FilterOptionsData>('/sales/filter-options');
+    const response = await apiClient.get<FilterOptionsData>('sales/filter-options');
     return response.data;
   },
 };
