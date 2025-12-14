@@ -1,0 +1,11 @@
+# Exclude compiled JavaScript files from api/ folder
+# Vercel compiles TypeScript automatically, so we only need .ts files
+api/*.js
+api/*.js.map
+api/*.d.ts
+api/*.d.ts.map
+
+# Exclude other build artifacts
+dist/
+*.log
+

@@ -58,6 +58,12 @@ coverage/
 # TypeScript cache
 *.tsbuildinfo
 
+# Compiled JavaScript files in api/ (Vercel compiles TypeScript automatically)
+api/*.js
+api/*.js.map
+api/*.d.ts
+api/*.d.ts.map
+
 # Large data files (use Git LFS or provide separately)
 # Note: dataset.csv is ~224MB and exceeds GitHub's 100MB file limit
 # Add it manually or use Git LFS: git lfs track "*.csv"
