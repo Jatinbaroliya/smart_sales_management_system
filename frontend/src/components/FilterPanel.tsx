@@ -18,6 +18,14 @@ export function FilterPanel({
     return <div className={styles.panel}>Loading filter options...</div>;
   }
 
+  // Safe local defaults so individual properties can't be undefined at render time
+  const safeRegions = filterOptions.regions ?? [];
+  const safeGenders = filterOptions.genders ?? [];
+  const safeCategories = filterOptions.categories ?? [];
+  const safePaymentMethods = filterOptions.paymentMethods ?? [];
+  const safeAgeRange = filterOptions.ageRange ?? { min: 0, max: 120 };
+  const safeDateRange = filterOptions.dateRange ?? { start: '', end: '' };
+
   const handleMultiSelect = (
     key: keyof FilterOptions,
     value: string,
@@ -79,7 +87,7 @@ export function FilterPanel({
         <div className={styles.filterGroup}>
           <label className={styles.label}>Region</label>
           <div className={styles.checkboxGroup}>
-            {filterOptions.regions.map((region) => (
+            {safeRegions.map((region) => (
               <label key={region} className={styles.checkboxLabel}>
                 <input
                   type="checkbox"
@@ -99,7 +107,7 @@ export function FilterPanel({
         <div className={styles.filterGroup}>
           <label className={styles.label}>Gender</label>
           <div className={styles.checkboxGroup}>
-            {filterOptions.genders.map((gender) => (
+            {safeGenders.map((gender) => (
               <label key={gender} className={styles.checkboxLabel}>
                 <input
                   type="checkbox"
@@ -118,15 +126,15 @@ export function FilterPanel({
         {/* Age Range Filter */}
         <div className={styles.filterGroup}>
           <label className={styles.label}>
-            Age Range: {filters.ageRange?.min || filterOptions.ageRange.min} -{' '}
-            {filters.ageRange?.max || filterOptions.ageRange.max}
+            Age Range: {filters.ageRange?.min ?? safeAgeRange.min} -{' '}
+            {filters.ageRange?.max ?? safeAgeRange.max}
           </label>
           <div className={styles.rangeInputs}>
             <input
               type="number"
-              min={filterOptions.ageRange.min}
-              max={filterOptions.ageRange.max}
-              value={filters.ageRange?.min || filterOptions.ageRange.min}
+              min={safeAgeRange.min}
+              max={safeAgeRange.max}
+              value={filters.ageRange?.min ?? safeAgeRange.min}
               onChange={(e) =>
                 handleAgeRange('min', parseInt(e.target.value, 10))
               }
@@ -136,9 +144,9 @@ export function FilterPanel({
             <span className={styles.rangeSeparator}>-</span>
             <input
               type="number"
-              min={filterOptions.ageRange.min}
-              max={filterOptions.ageRange.max}
-              value={filters.ageRange?.max || filterOptions.ageRange.max}
+              min={safeAgeRange.min}
+              max={safeAgeRange.max}
+              value={filters.ageRange?.max ?? safeAgeRange.max}
               onChange={(e) =>
                 handleAgeRange('max', parseInt(e.target.value, 10))
               }
@@ -152,7 +160,7 @@ export function FilterPanel({
         <div className={styles.filterGroup}>
           <label className={styles.label}>Category</label>
           <div className={styles.checkboxGroup}>
-            {filterOptions.categories.map((category) => (
+            {safeCategories.map((category) => (
               <label key={category} className={styles.checkboxLabel}>
                 <input
                   type="checkbox"
@@ -172,7 +180,7 @@ export function FilterPanel({
         <div className={styles.filterGroup}>
           <label className={styles.label}>Payment Method</label>
           <div className={styles.checkboxGroup}>
-            {filterOptions.paymentMethods.map((method) => (
+            {safePaymentMethods.map((method) => (
               <label key={method} className={styles.checkboxLabel}>
                 <input
                   type="checkbox"
@@ -195,8 +203,8 @@ export function FilterPanel({
             <input
               type="date"
               value={filters.dateRange?.start || ''}
-              min={filterOptions.dateRange.start}
-              max={filterOptions.dateRange.end}
+              min={safeDateRange.start}
+              max={safeDateRange.end}
               onChange={(e) => handleDateRange('start', e.target.value)}
               className={styles.dateInput}
             />
@@ -204,8 +212,8 @@ export function FilterPanel({
             <input
               type="date"
               value={filters.dateRange?.end || ''}
-              min={filterOptions.dateRange.start}
-              max={filterOptions.dateRange.end}
+              min={safeDateRange.start}
+              max={safeDateRange.end}
               onChange={(e) => handleDateRange('end', e.target.value)}
               className={styles.dateInput}
             />
